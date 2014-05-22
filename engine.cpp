@@ -1,5 +1,7 @@
 #include "engine.hpp"
 
+#include <algorithm>
+
 Engine::Engine()
 {
 
@@ -26,17 +28,17 @@ void Engine::popScene()
 
 void Engine::update()
 {
-	for(int i = 0; i<scenes.size(); i++)
+	for(Scene *scene : scenes) 
 	{
-		scenes[i]->update();
+		scene->update();
 	}
 }
 
 void Engine::render()
 {
-	for(int i = 0; i<scenes.size(); i++)
+	for(Scene *scene : scenes)
 	{
-		scenes[i]->render();
+		scene->render();
 	}	
 }
 

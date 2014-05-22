@@ -6,6 +6,8 @@
 
 #include "scene.hpp"
 
+using std::vector;
+
 class Engine
 {
 public:

@@ -1,4 +1,7 @@
 #include "scene.hpp"
+#include <algorithm>
+#include <iostream>
+#include <functional>
 
 Scene::Scene() : sceneLive(false)
 {
@@ -26,22 +29,14 @@ void Scene::addRenderable(Renderable *renderable)
 
 void Scene::removeRenderable(Renderable *renderable)
 {
-	for(int i = 0; i < renderables.size(); i++)
-	{
-		if(renderables[i] == renderable)
-		{
-			renderables.erase(renderables.begin()+i);
-			return;
-		}
-	}
+	renderables.remove(renderable);
 }
 
 void Scene::sceneAdded()
 {
 	sceneLive = true;
-	for(int i = 0; i < entities.size(); i++)
-	{
-		entities[i]->entityAdded();
+	for(Entity *entity : entities) {
+		entity->entityAdded();
 	}
 }
 
@@ -52,61 +47,45 @@ void Scene::sceneRemoved()
 
 void Scene::update()
 {
-	for(int i = 0; i < entities.size();)
+	for(Entity *entity : entities)
 	{
-		if(!entities[i]->update())
+		if(!entity->update())
 		{
-			entities[i]->entityRemoved();
-			delete entities[i];
-			entities.erase(entities.begin()+i);
-		}
-		else
-		{
-			++i;
+			entity->entityRemoved();
 		}
 	}
 
-	for(int i = 0; i < entities.size();)
+	if(entities.size()>0)
 	{
-		for(int k = 0; k < entities.size(); )
+		entities.remove_if([](Entity *ent) { return !ent->isAlive(); });
+	}
+
+	for(Entity *collider : entities) {
+		if(collider->isAlive())
 		{
-			if(i == k || !entities[i]->isAlive() || !entities[k]->isAlive())
-			{
-				k++;
-				continue;
+			for(Entity *collidee : entities) {
+				if(collider != collidee && collidee->isAlive())
+				{
+					collider->checkCollision(collidee);
+				}
 			}
-
-			entities[i]->checkCollision(entities[k]);
-
-			k++;
 		}
-		i++;
 	}
 }
 
 void Scene::render()
 {
-	for(int i = 0; i < renderables.size();)
-	{
-		if(!renderables[i]->render())
-		{
-			renderables.erase(renderables.begin()+i);
-		}
-		else
-		{
-			++i;
-		}
-	}
+	renderables.remove_if([](Renderable *renderable){ return !renderable->render(); });
 }
 
 
 Entity *Scene::findEntityByName(const string &name)
 {
-	for(int i = 0; i<entities.size(); i++)
+	for(Entity *entity : entities)
 	{
-		if(entities[i]->getName() == name)
+		if(entity->getName() == name)
 		{
-			return entities[i];
+			return entity;
 		}
 	}
 

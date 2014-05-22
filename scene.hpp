@@ -1,15 +1,15 @@
 #ifndef __SCENE_HPP__
 #define __SCENE_HPP__
 
-#include <vector>
+#include <list>
 #include "entity.hpp"
 #include "renderable.hpp"
 
-using std::vector;
+using std::list;
 using std::string;
 
-typedef vector<Renderable*> RenderableList;
-typedef vector<Entity*> EntityList;
+typedef list<Renderable*> RenderableList;
+typedef list<Entity*> EntityList;
 
 class Scene
 {

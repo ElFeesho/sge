@@ -1,12 +1,10 @@
 OBJS=engine.o entity.o renderable.o collidable.o scene.o
 LIBS=
-CFLAGS=
+CXXFLAGS=-std=c++11 -g
 LIBRARY=libsge.a
 
 all:$(OBJS)
 	ar crf $(LIBRARY) $(OBJS)
-%o:%cpp
-	g++ $(CFLAGS) $< -c
 
 clean:
 	rm -f $(OBJS) $(LIBRARY)
